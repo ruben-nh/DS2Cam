@@ -29,9 +29,9 @@
 
 // Mandatory constants to define for a game
 #define GAME_NAME									"Dark Souls II"
-#define CAMERA_VERSION								"0.0.1"
-#define CAMERA_CREDITS								"GranpdaGameHacker"
-#define GAME_WINDOW_TITLE							"Dark Souls II"
+#define CAMERA_VERSION								"0.0.2"
+#define CAMERA_CREDITS								"Original Code by GranpdaGameHacker, Updates and Fixes by Ruben_nh"
+#define GAME_WINDOW_TITLE							"DARK SOULS II"
 #define INITIAL_PITCH_RADIANS						0.0f
 #define INITIAL_YAW_RADIANS							0.0f
 #define INITIAL_ROLL_RADIANS						0.0f
@@ -39,11 +39,11 @@
 // End Mandatory constants
 
 // Offsets for camera intercept code. Used in interceptor.
-#define CAMERA_ADDRESS_INTERCEPT_START_OFFSET		0x1F1A4E
-#define CAMERA_ADDRESS_INTERCEPT_CONTINUE_OFFSET	0x1F1A5D
+#define CAMERA_ADDRESS_INTERCEPT_START_OFFSET		0x1F521E	//0x1F1A4E
+#define CAMERA_ADDRESS_INTERCEPT_CONTINUE_OFFSET	0x1F522D	//0x1F1A5D
 
-#define	CAMERA_WRITE_INTERCEPT1_START_OFFSET		0xAE07E0		
-#define CAMERA_WRITE_INTERCEPT1_CONTINUE_OFFSET		0xAE0802
+#define	CAMERA_WRITE_INTERCEPT1_START_OFFSET		0xAE7DC0	//0xAE07E0 
+#define CAMERA_WRITE_INTERCEPT1_CONTINUE_OFFSET		0xAE7DE2	//0xAE0802
 
 // Indices in the structures read by interceptors 
 #define CAMERA_LOOK_MATRIX		0x170
