@@ -49,8 +49,8 @@ Camera::~Camera(void)
 XMVECTOR Camera::CalculateLookQuaternion()
 {
 	XMVECTOR xQ = XMQuaternionRotationNormal(XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f), -m_pitch);
-	XMVECTOR yQ = XMQuaternionRotationNormal(XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f), m_roll);		
-	XMVECTOR zQ = XMQuaternionRotationNormal(XMVectorSet(0.0f, 0.0f, 1.0f, 1.0f), -m_yaw);		
+	XMVECTOR yQ = XMQuaternionRotationNormal(XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f), -m_yaw);		
+	XMVECTOR zQ = XMQuaternionRotationNormal(XMVectorSet(0.0f, 0.0f, 1.0f, 1.0f), -m_roll);		
 
 	XMVECTOR tmpQ = XMQuaternionMultiply(xQ, zQ);
 	XMVECTOR qToReturn = XMQuaternionMultiply(yQ, tmpQ);
@@ -87,13 +87,19 @@ XMFLOAT3 Camera::CalculateNewCoords(const XMFLOAT3 currentCoords, const XMVECTOR
 	toReturn.y = currentCoords.y;
 	toReturn.z = currentCoords.z;
 	if (m_movementOccurred)
-	{
-		XMVECTOR directionAsQ = XMVectorSet(m_direction.x, m_direction.y, m_direction.z, 0.0f);
-		XMVECTOR newDirection = XMVector3Rotate(directionAsQ, lookQ);
-		toReturn.x += XMVectorGetX(newDirection);
-		toReturn.y += XMVectorGetY(newDirection);
-		toReturn.z += XMVectorGetZ(newDirection);
-		toReturn.z += m_direction.z;
+	{		
+		XMMATRIX lookMatrix = XMMatrixRotationQuaternion(lookQ);
+		XMFLOAT4X4 lookAs4X4;
+		XMStoreFloat4x4(&lookAs4X4, lookMatrix);
+		// the lookMatrix is the transformation matrix of the look Quaternion. The first column is the x axis, the third column is the actual look vector. 
+		// This is a transformation matrix so the values we need to use are negated. As Y+ is up, Z+ is out of the screen, X+ is to the right. 
+		toReturn.x += lookAs4X4._11 * m_direction.x;
+		toReturn.y += lookAs4X4._21 * m_direction.x;
+		toReturn.z += lookAs4X4._31 * m_direction.x;
+		toReturn.x += lookAs4X4._13 * -m_direction.z;
+		toReturn.y += lookAs4X4._23 * -m_direction.z;	// movement in the camera look direction. Z+ is out of the screen in worldspace! (Y is up!)
+		toReturn.z += lookAs4X4._33 * -m_direction.z;
+		toReturn.y += m_direction.y;					// Don't use the look matrix' second column (which is up) as we want Y to move along world Y axis always.		
 	}
 	return toReturn;
 }
@@ -101,7 +107,7 @@ XMFLOAT3 Camera::CalculateNewCoords(const XMFLOAT3 currentCoords, const XMVECTOR
 
 void Camera::MoveForward(float amount)
 {
-	m_direction.y += (m_movementSpeed * amount);			// game has Z up and Y out of the screen
+	m_direction.z -= (m_movementSpeed * amount);			// game has Y up and Z out of the screen
 	m_movementOccurred = true;
 }
 
@@ -113,7 +119,7 @@ void Camera::MoveRight(float amount)
 
 void Camera::MoveUp(float amount)
 {
-	m_direction.z += (m_movementSpeed * amount * DEFAULT_Z_MOVEMENT_MULTIPLIER);
+	m_direction.y += (m_movementSpeed * amount * DEFAULT_Y_MOVEMENT_MULTIPLIER);
 	m_movementOccurred = true;
 }
 
