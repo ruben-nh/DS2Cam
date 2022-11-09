@@ -30,7 +30,7 @@
 // Mandatory constants to define for a game
 #define GAME_NAME									"Dark Souls II"
 #define CAMERA_VERSION								"0.0.2"
-#define CAMERA_CREDITS								"Original Code by GranpdaGameHacker, Updates and Fixes by Ruben_nh"
+#define CAMERA_CREDITS								"Baseline Code by GranpdaGameHacker, Fixes and new functionality by Ruben_nh"
 #define GAME_WINDOW_TITLE							"DARK SOULS II"
 #define INITIAL_PITCH_RADIANS						0.0f
 #define INITIAL_YAW_RADIANS							0.0f
